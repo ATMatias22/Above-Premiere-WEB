@@ -6,12 +6,25 @@ namespace Above_Premiere.Modelo
     public class UserDAO
 
     {
+        public static UserDAO instance = null;
         List<User> users;
 
         public UserDAO()
         {
             this.users = new List<User>();
             createUser();
+        }
+
+        public static UserDAO getInstance()
+        {
+
+            if (instance == null)
+            {
+                instance = new UserDAO();
+            }
+
+            return instance;
+
         }
 
         private void createUser()

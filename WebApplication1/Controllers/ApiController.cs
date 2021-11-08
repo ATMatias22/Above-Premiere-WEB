@@ -15,12 +15,9 @@ namespace WebApplication1.Controllers
     [Route("/api")]
     public class ApiController : Controller
     {
-        private UserDAO userDAO;
-
 
         public ApiController()
         {
-            userDAO = new UserDAO();
         }
 
         [Route("ping")]
@@ -37,7 +34,7 @@ namespace WebApplication1.Controllers
             User json = JsonConvert.DeserializeObject<User>(body.ToString());
             try
             {
-                User userFound = userDAO.loginUser(json.Name, json.Password);
+                User userFound = UserDAO.getInstance().loginUser(json.Name, json.Password);
                 return Ok(new { error = false, json.Name, json.Password });
             }
             catch (Exception)
