@@ -17,48 +17,30 @@ namespace Above_Premiere.Modelo
 
         public static UserDAO getInstance()
         {
-
             if (instance == null)
             {
                 instance = new UserDAO();
             }
-
             return instance;
-
         }
 
         private void createUser()
         {
-            this.users.Add(new User("Matias", "Matias123"));
-            this.users.Add(new User("Alejandro", "Alejandro123"));
-            this.users.Add(new User("Juan", "Juan123"));
-            this.users.Add(new User("Jose", "Jose123"));
-            this.users.Add(new User("Maria", "Maria123"));
-            this.users.Add(new User("Lucia", "Lucia123"));
+            registerUser("Matias", "Matias123");
+            registerUser("Alejandro", "Alejandro123");
+            registerUser("Juan", "Juan123");
+            registerUser("Jose", "Jose123");
+            registerUser("Maria", "Maria123");
+            registerUser("Lucia", "Lucia123");
         }
 
 
 
         public User loginUser(String name, String password)
         {
-            bool userNameWasFound = false;
-            User userFound = null;
-            int counter = 0;
-            while (counter < this.users.Count && !userNameWasFound)
-            {
-                User auxUser = this.users[counter];
-                if (auxUser.Name.Equals(name))
-                {
-                    if (auxUser.Password.Equals(password))
-                    {
-                        userFound = auxUser;
-                    }
-                    userNameWasFound = true;
-                }
-                counter++;
-            }
+            User userFound = searchUser(name, password);
 
-            if(userFound == null)
+            if (userFound == null)
             {
                 throw new Exception("Alguna de sus credenciales son incorrectas");
             }
@@ -66,6 +48,36 @@ namespace Above_Premiere.Modelo
             return userFound;
         }
 
-   
+        public User registerUser(String name, String password)
+        {
+            if (repeatUser(name))
+            {
+                throw new Exception("Este usuario ya existe elija otro por favor");
+            }
+            User newUser = new User(name, password);
+            newUser.setKey();
+            this.users.Add(newUser);
+
+            return newUser;
+
+        }
+
+        public User searchUser(string username, string password)
+        {
+            return users.Find(x => x.Name == username && x.Password == password);
+        }
+
+        public bool repeatUser(string username)
+        {
+            return users.Find(x => x.Name == username) != null;
+        }
+
+
+
+        /*----------------*/
+        public List<User> getAllUser()
+        {
+            return new List<User>(users);
+        }
     }
 }

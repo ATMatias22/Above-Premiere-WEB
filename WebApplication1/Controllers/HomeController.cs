@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Above_Premiere.Modelo;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,6 +41,25 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
+
+        public IActionResult Download()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult RegisterUser(string username, string password)
+        {
+            var client = new RestClient("http://localhost:40100");
+            var request = new RestRequest("/api/register", Method.POST);
+            request.AddJsonBody(new { Name = username, Password = password });
+            var response = client.Execute(request);
+            var obj = JObject.Parse(response.Content);
+            ViewBag.msg = obj;
+            return View("Register");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

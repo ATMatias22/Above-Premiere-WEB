@@ -16,31 +16,44 @@ namespace WebApplication1.Controllers
     public class ApiController : Controller
     {
 
-        public ApiController()
-        {
-        }
-
-        [Route("ping")]
-        [HttpGet]
-        public string Ping()
-        {
-            return "Pong";
-        }
-
         [Route("check")]
         [HttpPost]
-        public IActionResult checkUser([FromBody] JsonElement body)
+        public IActionResult CheckUser([FromBody] JsonElement body)
         {
-            User json = JsonConvert.DeserializeObject<User>(body.ToString());
+            User getUser = JsonConvert.DeserializeObject<User>(body.ToString());
             try
             {
-                User userFound = UserDAO.getInstance().loginUser(json.Name, json.Password);
-                return Ok(new { error = false, json.Name, json.Password });
+                User userFound = UserDAO.getInstance().loginUser(getUser.Name, getUser.Password);
+                return Ok(new { valid = true, title = "Logueado", message = "Logueado correctamente", user = userFound });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Ok(new { error = true });
+                return Ok(new { valid = false, title = "Error al loguearse", message = e.Message, user = "null" });
             }
+        }
+
+        [Route("register")]
+        [HttpPost]
+        public IActionResult RegisterUser([FromBody] JsonElement body)
+        {
+            User getUser = JsonConvert.DeserializeObject<User>(body.ToString());
+            try
+            {
+                User registeredUser =  UserDAO.getInstance().registerUser(getUser.Name, getUser.Password);
+                return Ok(new { valid = true, title = "Registrado", message = "Registrado Correctamente", key = registeredUser.Key });
+            }
+            catch (Exception e)
+            {
+                return Ok(new { valid = false, title = "Error al registrarse", message = e.Message, });
+            }
+        }
+
+        [Route("getAllUser")]
+        [HttpGet]
+        public IActionResult allUser()
+        {
+            List<User> users = UserDAO.getInstance().getAllUser();
+            return Ok(new { data = users });
         }
     }
 }
