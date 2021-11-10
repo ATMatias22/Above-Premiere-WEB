@@ -8,10 +8,9 @@ namespace Above_Premiere.Modelo
 {
     public class User
     {
-         string name;
-         string password;
+        string name;
+        string password;
         string key;
-
 
         public User(string nombre, string password)
         {
@@ -23,10 +22,10 @@ namespace Above_Premiere.Modelo
         public string Name { get => name; set => name = value; }
         public string Password { get => password; set => password = value; }
         public string Key { get => key; set => key = value; }
-       
+
         public void setKey()
         {
-            if(this.key == null)
+            if (this.key == null)
             {
                 this.key = new CreatorKey().getKey();
             }

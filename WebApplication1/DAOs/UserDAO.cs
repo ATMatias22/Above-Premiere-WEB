@@ -42,7 +42,7 @@ namespace Above_Premiere.Modelo
 
             if (userFound == null)
             {
-                throw new Exception("Alguna de sus credenciales son incorrectas");
+                throw new Exception("Some of your credentials are wrong");
             }
 
             return userFound;
@@ -52,7 +52,7 @@ namespace Above_Premiere.Modelo
         {
             if (repeatUser(name))
             {
-                throw new Exception("Este usuario ya existe elija otro por favor");
+                throw new Exception("This user already exists, please choose another");
             }
             User newUser = new User(name, password);
             newUser.setKey();

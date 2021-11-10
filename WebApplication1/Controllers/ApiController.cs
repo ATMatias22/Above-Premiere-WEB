@@ -24,11 +24,11 @@ namespace WebApplication1.Controllers
             try
             {
                 User userFound = UserDAO.getInstance().loginUser(getUser.Name, getUser.Password);
-                return Ok(new { valid = true, title = "Logueado", message = "Logueado correctamente", user = userFound });
+                return Ok(new { valid = true, title = "Logged in", message = "Successfully logged in", user = userFound });
             }
             catch (Exception e)
             {
-                return Ok(new { valid = false, title = "Error al loguearse", message = e.Message, user = "null" });
+                return Ok(new { valid = false, title = "Login failed", message = e.Message, user = "null" });
             }
         }
 
@@ -40,17 +40,17 @@ namespace WebApplication1.Controllers
             try
             {
                 User registeredUser =  UserDAO.getInstance().registerUser(getUser.Name, getUser.Password);
-                return Ok(new { valid = true, title = "Registrado", message = "Registrado Correctamente", key = registeredUser.Key });
+                return Ok(new { valid = true, title = "Registered", message = "Registered Successfully", key = registeredUser.Key });
             }
             catch (Exception e)
             {
-                return Ok(new { valid = false, title = "Error al registrarse", message = e.Message, });
+                return Ok(new { valid = false, title = "Registration failed", message = e.Message, });
             }
         }
 
         [Route("getAllUser")]
         [HttpGet]
-        public IActionResult allUser()
+        public IActionResult AllUser()
         {
             List<User> users = UserDAO.getInstance().getAllUser();
             return Ok(new { data = users });
