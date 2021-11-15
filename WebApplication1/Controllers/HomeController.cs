@@ -48,17 +48,31 @@ namespace WebApplication1.Controllers
         }
 
 
+
+
+
         [HttpPost]
         public IActionResult RegisterUser(string username, string password)
         {
-            var client = new RestClient("http://localhost:40100");
-            var request = new RestRequest("/api/register", Method.POST);
-            request.AddJsonBody(new { Name = username, Password = password });
-            var response = client.Execute(request);
-            var obj = JObject.Parse(response.Content);
-            ViewBag.msg = obj;
+            JObject obj;
+            try
+            {
+                User registeredUser = UserDAO.getInstance().registerUser(username, password);
+                obj = JObject.FromObject(new { valid = true, title = "Registered", message = "Registered Successfully", key = registeredUser.Key });
+            }
+            catch (Exception e)
+            {
+                obj = JObject.FromObject(new { valid = false, title = "Registration failed", message = e.Message });
+            }
+
+             ViewBag.msg = obj;
             return View("Register");
         }
+
+
+
+
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

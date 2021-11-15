@@ -32,6 +32,9 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+
+
         [Route("register")]
         [HttpPost]
         public IActionResult RegisterUser([FromBody] JsonElement body)
@@ -47,6 +50,11 @@ namespace WebApplication1.Controllers
                 return Ok(new { valid = false, title = "Registration failed", message = e.Message, });
             }
         }
+
+
+
+
+
 
         [Route("getAllUser")]
         [HttpGet]
