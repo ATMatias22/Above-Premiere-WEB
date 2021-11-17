@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
             User getUser = JsonConvert.DeserializeObject<User>(body.ToString());
             try
             {
-                User userFound = UserDAO.getInstance().loginUser(getUser.Name, getUser.Password);
+                User userFound = UserDAO.getInstance().loginUser(getUser);
                 return Ok(new { valid = true, title = "Logged in", message = "Successfully logged in", user = userFound });
             }
             catch (Exception e)
@@ -42,7 +42,7 @@ namespace WebApplication1.Controllers
             User getUser = JsonConvert.DeserializeObject<User>(body.ToString());
             try
             {
-                User registeredUser =  UserDAO.getInstance().registerUser(getUser.Name, getUser.Password);
+                User registeredUser =  UserDAO.getInstance().registerUser(getUser);
                 return Ok(new { valid = true, title = "Registered", message = "Registered Successfully", key = registeredUser.Key });
             }
             catch (Exception e)
@@ -51,17 +51,5 @@ namespace WebApplication1.Controllers
             }
         }
 
-
-
-
-
-
-        [Route("getAllUser")]
-        [HttpGet]
-        public IActionResult AllUser()
-        {
-            List<User> users = UserDAO.getInstance().getAllUser();
-            return Ok(new { data = users });
-        }
     }
 }

@@ -57,7 +57,7 @@ namespace WebApplication1.Controllers
             JObject obj;
             try
             {
-                User registeredUser = UserDAO.getInstance().registerUser(username, password);
+                User registeredUser = UserDAO.getInstance().registerUser(new User(username,password));
                 obj = JObject.FromObject(new { valid = true, title = "Registered", message = "Registered Successfully", key = registeredUser.Key });
             }
             catch (Exception e)
@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers
                 obj = JObject.FromObject(new { valid = false, title = "Registration failed", message = e.Message });
             }
 
-             ViewBag.msg = obj;
+            ViewBag.msg = obj;
             return View("Register");
         }
 

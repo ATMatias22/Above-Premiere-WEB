@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using WebApplication1.DAOs;
+using MySql.Data.MySqlClient;
 
 namespace Above_Premiere.Modelo
 {
@@ -7,12 +9,10 @@ namespace Above_Premiere.Modelo
 
     {
         public static UserDAO instance = null;
-        List<User> users;
 
         public UserDAO()
         {
-            this.users = new List<User>();
-            createUser();
+      
         }
 
         public static UserDAO getInstance()
@@ -24,21 +24,24 @@ namespace Above_Premiere.Modelo
             return instance;
         }
 
-        private void createUser()
+
+
+        public User loginUser(User user)
         {
-            registerUser("Matias", "Matias123");
-            registerUser("Alejandro", "Alejandro123");
-            registerUser("Juan", "Juan123");
-            registerUser("Jose", "Jose123");
-            registerUser("Maria", "Maria123");
-            registerUser("Lucia", "Lucia123");
-        }
 
+            var queryBuilder = DBConnection.getInstance().getQueryBuilder();
+            
+            queryBuilder.setQuery("SELECT * FROM users WHERE username=@username AND password=@password");
+            queryBuilder.addParam("@username", user.UserName);
+            queryBuilder.addParam("@password", user.Password);
+            var dataReader = DBConnection.getInstance().select(queryBuilder);
 
+            User userFound = null;
 
-        public User loginUser(String name, String password)
-        {
-            User userFound = searchUser(name, password);
+            while (dataReader.Read())
+            {
+                userFound = new User(dataReader.GetString(1), dataReader.GetString(2));
+            }
 
             if (userFound == null)
             {
@@ -48,36 +51,31 @@ namespace Above_Premiere.Modelo
             return userFound;
         }
 
-        public User registerUser(String name, String password)
+        public User registerUser(User user)
         {
-            if (repeatUser(name))
+            try
             {
-                throw new Exception("This user already exists, please choose another");
+                var queryBuilder = DBConnection.getInstance().getQueryBuilder();
+
+                queryBuilder.setQuery("INSERT INTO users (username,password) VALUES (@username,@password)");
+                queryBuilder.addParam("@username", user.UserName);
+                queryBuilder.addParam("@password", user.Password);
+
+                DBConnection.getInstance().abm(queryBuilder);
+
+                user.setKey();
             }
-            User newUser = new User(name, password);
-            newUser.setKey();
-            this.users.Add(newUser);
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
 
-            return newUser;
+            return user;
 
         }
-
-        public User searchUser(string username, string password)
-        {
-            return users.Find(x => x.Name == username && x.Password == password);
-        }
-
-        public bool repeatUser(string username)
-        {
-            return users.Find(x => x.Name == username) != null;
-        }
-
 
 
         /*----------------*/
-        public List<User> getAllUser()
-        {
-            return new List<User>(users);
-        }
+
     }
 }

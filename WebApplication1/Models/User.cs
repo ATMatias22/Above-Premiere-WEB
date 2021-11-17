@@ -8,18 +8,18 @@ namespace Above_Premiere.Modelo
 {
     public class User
     {
-        string name;
+        string userName;
         string password;
         string key;
 
         public User(string nombre, string password)
         {
-            this.name = nombre;
+            this.userName = nombre;
             this.password = password;
 
         }
 
-        public string Name { get => name; set => name = value; }
+        public string UserName { get => userName; set => userName = value; }
         public string Password { get => password; set => password = value; }
         public string Key { get => key; set => key = value; }
 
