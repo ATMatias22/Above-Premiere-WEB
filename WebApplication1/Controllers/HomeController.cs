@@ -52,13 +52,13 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public IActionResult RegisterUser(string username, string password)
+        public IActionResult RegisterUser(string username, string password, string key)
         {
             JObject obj;
             try
             {
-                User registeredUser = UserDAO.getInstance().registerUser(new User(username,password));
-                obj = JObject.FromObject(new { valid = true, title = "Registered", message = "Registered Successfully", key = registeredUser.Key });
+                User registeredUser = UserDAO.getInstance().registerUser(new User(username,password,key));
+                obj = JObject.FromObject(new { valid = true, title = "Registered", message = "Registered Successfully"});
             }
             catch (Exception e)
             {

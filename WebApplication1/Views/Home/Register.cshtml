@@ -32,7 +32,7 @@
                         </h3>
                         @if (ViewBag.msg != null)
                         {
-                                <p class="@(ViewBag.msg["valid"] == true  ? "bg bg-success text-light text-center": "bg bg-dark text-danger text-center")">@ViewBag.msg["message"]</p>
+                            <p class="@(ViewBag.msg["valid"] == true  ? "bg bg-success text-light text-center": "bg bg-dark text-danger text-center")">@ViewBag.msg["message"]</p>
                         }
 
                         <form class="row contact_form" asp-action="RegisterUser" asp-controller="Home" method="POST">
@@ -43,6 +43,10 @@
                             <div class="col-md-12 form-group p_star">
                                 <input type="password" class="form-control" id="password" name="password" value=""
                                        placeholder="Password">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text" class="form-control" id="key" name="key" value=""
+                                       placeholder="key">
                             </div>
                             <div class="col-md-12 form-group">
                                 <button type="submit" value="submit" class="btn_3">

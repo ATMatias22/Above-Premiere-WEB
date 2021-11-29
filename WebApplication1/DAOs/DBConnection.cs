@@ -73,8 +73,6 @@ namespace WebApplication1.DAOs
             {
                 this.conn.Close();
             }
-
-
         }
 
 

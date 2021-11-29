@@ -40,7 +40,7 @@ namespace Above_Premiere.Modelo
 
             while (dataReader.Read())
             {
-                userFound = new User(dataReader.GetString(1), dataReader.GetString(2));
+                userFound = new User(dataReader.GetString(1), dataReader.GetString(2),dataReader.GetString(3));
             }
 
             if (userFound == null)
@@ -55,15 +55,18 @@ namespace Above_Premiere.Modelo
         {
             try
             {
+                verifyKeyAndItWasNotUsed(user.Key);
+
                 var queryBuilder = DBConnection.getInstance().getQueryBuilder();
 
-                queryBuilder.setQuery("INSERT INTO users (username,password) VALUES (@username,@password)");
+                queryBuilder.setQuery("INSERT INTO users (username,password,associated_key) VALUES (@username,@password,@key)");
                 queryBuilder.addParam("@username", user.UserName);
                 queryBuilder.addParam("@password", user.Password);
+                queryBuilder.addParam("@key", user.Key);
 
                 DBConnection.getInstance().abm(queryBuilder);
 
-                user.setKey();
+                useKey(user.Key);
             }
             catch (Exception err)
             {
@@ -74,6 +77,26 @@ namespace Above_Premiere.Modelo
 
         }
 
+        public void verifyKeyAndItWasNotUsed(string key)
+        {
+            var queryBuilder = DBConnection.getInstance().getQueryBuilder();
+            queryBuilder.setQuery($"SELECT * FROM product_keys where product_key = @key AND is_used = 0");
+            queryBuilder.addParam("@key", key);
+            var dataReader = DBConnection.getInstance().select(queryBuilder);
+
+            if (!dataReader.Read())
+            {
+                throw new Exception("The key does not exist or has already been used");
+            }
+        }
+
+        public void useKey(string key)
+        {
+            var queryBuilder = DBConnection.getInstance().getQueryBuilder();
+            queryBuilder.setQuery($"UPDATE product_keys SET is_used = 1 WHERE product_key = @key");
+            queryBuilder.addParam("@key", key);
+            DBConnection.getInstance().abm(queryBuilder);
+        }
 
         /*----------------*/
 

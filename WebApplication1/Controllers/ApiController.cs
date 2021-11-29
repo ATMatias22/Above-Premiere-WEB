@@ -43,11 +43,11 @@ namespace WebApplication1.Controllers
             try
             {
                 User registeredUser =  UserDAO.getInstance().registerUser(getUser);
-                return Ok(new { valid = true, title = "Registered", message = "Registered Successfully", key = registeredUser.Key });
+                return Ok(new { valid = true, title = "Registered", message = "Registered Successfully" });
             }
             catch (Exception e)
             {
-                return Ok(new { valid = false, title = "Registration failed", message = e.Message, });
+                return Ok(new { valid = false, title = "Registration failed", message = e.Message });
             }
         }
 
