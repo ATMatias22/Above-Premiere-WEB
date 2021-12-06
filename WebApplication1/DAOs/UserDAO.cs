@@ -31,7 +31,7 @@ namespace Above_Premiere.Modelo
 
             var queryBuilder = DBConnection.getInstance().getQueryBuilder();
             
-            queryBuilder.setQuery("SELECT * FROM users WHERE username=@username AND password=@password");
+            queryBuilder.setQuery("SELECT u.username, u.password, p.product_key FROM users u inner join product_keys p on p.id = u.associated_key WHERE username=@username AND password=@password");
             queryBuilder.addParam("@username", user.UserName);
             queryBuilder.addParam("@password", user.Password);
             var dataReader = DBConnection.getInstance().select(queryBuilder);
@@ -40,7 +40,7 @@ namespace Above_Premiere.Modelo
 
             while (dataReader.Read())
             {
-                userFound = new User(dataReader.GetString(1), dataReader.GetString(2),dataReader.GetString(3));
+                userFound = new User(dataReader.GetString(0), dataReader.GetString(1),dataReader.GetString(2));
             }
 
             if (userFound == null)
@@ -55,18 +55,18 @@ namespace Above_Premiere.Modelo
         {
             try
             {
-                verifyKeyAndItWasNotUsed(user.Key);
+                int idKey = verifyKeyAndItWasNotUsed(user.Key);
 
                 var queryBuilder = DBConnection.getInstance().getQueryBuilder();
 
                 queryBuilder.setQuery("INSERT INTO users (username,password,associated_key) VALUES (@username,@password,@key)");
                 queryBuilder.addParam("@username", user.UserName);
                 queryBuilder.addParam("@password", user.Password);
-                queryBuilder.addParam("@key", user.Key);
+                queryBuilder.addParam("@key", idKey);
 
                 DBConnection.getInstance().abm(queryBuilder);
 
-                useKey(user.Key);
+                useKey(idKey);
             }
             catch (Exception err)
             {
@@ -77,24 +77,28 @@ namespace Above_Premiere.Modelo
 
         }
 
-        public void verifyKeyAndItWasNotUsed(string key)
+        public int verifyKeyAndItWasNotUsed(string key)
         {
             var queryBuilder = DBConnection.getInstance().getQueryBuilder();
             queryBuilder.setQuery($"SELECT * FROM product_keys where product_key = @key AND is_used = 0");
             queryBuilder.addParam("@key", key);
             var dataReader = DBConnection.getInstance().select(queryBuilder);
 
-            if (!dataReader.Read())
+
+            if (dataReader.Read())
             {
-                throw new Exception("The key does not exist or has already been used");
+                return dataReader.GetInt32(0); 
             }
+
+            throw new Exception("The key does not exist or has already been used");
+
         }
 
-        public void useKey(string key)
+        public void useKey(int idKey)
         {
             var queryBuilder = DBConnection.getInstance().getQueryBuilder();
-            queryBuilder.setQuery($"UPDATE product_keys SET is_used = 1 WHERE product_key = @key");
-            queryBuilder.addParam("@key", key);
+            queryBuilder.setQuery($"UPDATE product_keys SET is_used = 1 WHERE id = @key");
+            queryBuilder.addParam("@key", idKey);
             DBConnection.getInstance().abm(queryBuilder);
         }
 
